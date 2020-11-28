@@ -13,7 +13,13 @@ for A in array:
     y.append(float(tmp[1]))
 out.close()
 
-plt.plot(x, y)
-plt.plot(t, t/t)
-plt.show()
+plt.plot(x, y,  label=r'$\dfrac{T_{s}}{T_{rbt}}$')
+plt.plot(t, t/t, label=r'$y=1$')
+plt.legend(loc='best', fontsize=12)
+plt.grid(True)
+# plt.savefig("result.png")
 plt.savefig("result_2.png")
+# plt.title("Отношение времён вставки для set и rbt")
+plt.title("Отношение времён удаления для set и rbt")
+plt.show()
+
