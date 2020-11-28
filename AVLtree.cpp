@@ -147,14 +147,17 @@ class AVL
 			return r-l;
 		}
 	}
+	void destruct(node<key, value>* leaf){
+		if(leaf->left != NULL) destruct(leaf->left);
+		if(leaf->right != NULL) destruct(leaf->right);
+		free(leaf);
+	}
 	public:
 		AVL(){
 			root = NULL;
 		};
 		~AVL(){
-			while(root != NULL){
-				erase(root, root->value);
-			}
+			destruct(root);
 		}
 		void insert(key k, value v){
 			root = insert(k, v, root);
