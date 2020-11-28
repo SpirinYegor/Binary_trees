@@ -172,7 +172,14 @@ class AVL
 		}
 		void erase(key k){
 			root = erase(root, k);
-		} 
+		}
+		void print(node<key, value>* root){
+			if(root != NULL){
+				std::cout << root->value << " ";
+				print(root->left);
+				print(root->right);
+			}
+		}
 };
 
 

@@ -11,7 +11,7 @@ int main(){
     auto finish = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> elapsed = finish - start;
     start = std::chrono::high_resolution_clock::now();
-    for(int k = 1; k < 100000; k+=100){
+    for(int k = 1; k < 1000; k+=100){
 		auto start = std::chrono::high_resolution_clock::now();
     	auto finish = std::chrono::high_resolution_clock::now();
     	std::chrono::duration<double> elapsed = finish - start;
@@ -38,6 +38,13 @@ int main(){
 	    elapsed1 = finish1-start1;
 	    t = elapsed1.count();
 	    std::cout << t << "\n";
+	}
+	for(int i = 0; i < 6; i++){
+		b.insert(i,i);
+	}
+	for(int i = 0; i < 6; i++){
+		b.print(b.find(i));
+		std::cout << "\n";
 	}
 	return 0;
 }
