@@ -151,6 +151,11 @@ class AVL
 		AVL(){
 			root = NULL;
 		};
+		~AVL(){
+			while(root != NULL){
+				erase(root, root->value);
+			}
+		}
 		void insert(key k, value v){
 			root = insert(k, v, root);
 		};
@@ -181,5 +186,3 @@ class AVL
 			}
 		}
 };
-
-
