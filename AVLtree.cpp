@@ -44,7 +44,7 @@ class AVL
 						temp = leaf;
 						leaf = NULL;
 					}else *leaf = *temp;
-					free(temp);
+					delete temp;
 				}else{
 					node<key, value>* temp = minValue(leaf->right);
 					leaf->clue = temp->clue;
@@ -150,7 +150,7 @@ class AVL
 	void destruct(node<key, value>* leaf){
 		if(leaf->left != NULL) destruct(leaf->left);
 		if(leaf->right != NULL) destruct(leaf->right);
-		free(leaf);
+		delete leaf;
 	}
 	public:
 		AVL(){
