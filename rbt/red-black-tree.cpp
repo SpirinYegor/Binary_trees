@@ -42,14 +42,7 @@ private:
         }
     }
 
-    Node<Type>* GetUncle(const Node<Type>* node)const{
-        if(node->parent){
-            return GetBrother(node->parent);
-        }
-        else{
-            return NULL;
-        }
-    }
+    
     void RotateLeft(Node<Type>* node) {
         Node<Type>* nnew = node->right;
         Node<Type>* p = node->parent;
@@ -57,10 +50,10 @@ private:
         node->right = nnew->left;
         nnew->left = node;
         node->parent = nnew;
-        if (node->right != nullptr) {
+        if (node->right != NULL) {
             node->right->parent = node;
         }
-        if (p != nullptr) {
+        if (p != NULL) {
             if (node == p->left) {
                 p->left = nnew;
             } else if (node == p->right) {
@@ -77,10 +70,10 @@ private:
         node->parent = nnew;
 
 
-        if (node->left != nullptr) {
+        if (node->left != NULL) {
             node->left->parent = node;
         }
-        if (p != nullptr) {
+        if (p != NULL) {
             if (node == p->left) {
                 p->left = nnew;
             } else if (node == p->right) {
@@ -136,8 +129,7 @@ private:
                     p->color = BLACK;
                     break;
                 }
-            }
-            else {
+            }else {
                 Node<Type>* uncle = g->left;
                 if (uncle and uncle->color == RED) {
                     g->color = RED;
@@ -145,8 +137,7 @@ private:
                     uncle->color = BLACK;
                     node = g;
                     p= node->parent;
-                }
-                else {
+                }else {
                     if (p->left == node) {
                         RotateRight(p);
                         std::swap(p, node);
