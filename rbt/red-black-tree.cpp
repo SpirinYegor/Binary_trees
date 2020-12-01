@@ -365,7 +365,7 @@ public:
             }
             approx_elements*=2;
        }
-       if(approx_elements!=v.size()){
+       if(approx_elements-1!=v.size()){
             std::queue<Node<Type>> q;
             q.push(root);
             for(int i=0; i<v.size(); i++){
