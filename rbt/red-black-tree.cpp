@@ -1,5 +1,6 @@
 #include <iostream>
-
+#include <vector>
+#include <queue>
 
 enum Color{
     RED,
@@ -13,7 +14,34 @@ struct Node {
     Node *parent;
     Color color;
 };
+template<typename Type>
+void recurcive_constructor(Node<Type>* ROOT, typename std::vector<Type>::iterator begin,
+        typename std::vector<Type>::iterator end){
+    if(begin==end){
+        return;
+    }else{
+        Node <Type>* tmp=new Node<Type>;
+        tmp->color=BLACK;
+        tmp->left=NULL;
+        tmp->right=NULL;
+        auto it=(begin+end)/2;
+        tmp->value=*it;
+        if(!ROOT){
+            tmp->parent=NULL;
+            ROOT=tmp;
+        }else {
+            tmp->parent = ROOT;
+        }
+        if(ROOT->value>*it){
+            ROOT->right=tmp;
+            recurcive_constructor(tmp, ++it, end);
+        }else {
+            ROOT->left = tmp;
+            recurcive_constructor(tmp, begin, --it);
+        }
 
+    }
+}
 template<typename Type>
 class RED_BLACK_TREE{
 
@@ -42,7 +70,7 @@ private:
         }
     }
 
-    
+
     void RotateLeft(Node<Type>* node) {
         Node<Type>* nnew = node->right;
         Node<Type>* p = node->parent;
@@ -326,6 +354,31 @@ private:
 public:
     RED_BLACK_TREE(){
         root=NULL;
+    }
+    RED_BLACK_TREE(const std::vector<Type>& v){
+        root=NULL;
+        recurcive_constructor(root, v.begin(), v.end()--);
+       int approx_elements=1;
+       while(1){
+            if(approx_elements-1>=v.size()){
+                break;
+            }
+            approx_elements*=2;
+       }
+       if(approx_elements!=v.size()){
+            std::queue<Node<Type>> q;
+            q.push(root);
+            for(int i=0; i<v.size(); i++){
+                if(i>approx_elements/2-1){
+                    q.front()->color=RED;
+                    q.pop();
+                }else {
+                    q.push(q.front()->left);
+                    q.push(q.front()->right);
+                    q.pop();
+                }
+            }
+        }
     }
     ~RED_BLACK_TREE(){
         uproot(root);
