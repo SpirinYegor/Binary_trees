@@ -32,7 +32,7 @@ void recurcive_constructor(Node<Type>* ROOT, typename std::vector<Type>::iterato
         }else {
             tmp->parent = ROOT;
         }
-        if(ROOT->value>*it){
+        if(ROOT->value<*it){
             ROOT->right=tmp;
             recurcive_constructor(tmp, ++it, end);
         }else {
