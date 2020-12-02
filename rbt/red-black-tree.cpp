@@ -359,7 +359,7 @@ public:
         root=NULL;
         recurcive_constructor(root, v.begin(), v.end()--);
        int approx_elements=1;
-       while(1){
+       while(true){
             if(approx_elements-1>=v.size()){
                 break;
             }
@@ -370,7 +370,9 @@ public:
             q.push(root);
             for(int i=0; i<v.size(); i++){
                 if(i>approx_elements/2-1){
-                    q.front()->color=RED;
+                    if(q.front()) {
+                        q.front()->color = RED;
+                    }
                     q.pop();
                 }else {
                     q.push(q.front()->left);
