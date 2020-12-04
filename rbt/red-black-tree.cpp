@@ -13,35 +13,39 @@ struct Node {
     Node *left;
     Node *parent;
     Color color;
+    int deep=0;
+    Node(){}
+    Node(const int& value_, Node<Type>* right_,Node<Type>* left_, Node<Type>* parent_, Color color_, const int& deep_):
+            value(value_),right(right_), left(left_), parent(parent_), color(color_),  deep(deep_) {}
 };
-template<typename Type>
-void recurcive_constructor(Node<Type>* ROOT, typename std::vector<Type>::iterator begin,
-        typename std::vector<Type>::iterator end){
-    if(begin==end){
-        return;
-    }else{
-        Node <Type>* tmp=new Node<Type>;
-        tmp->color=BLACK;
-        tmp->left=NULL;
-        tmp->right=NULL;
-        auto it=(begin+end)/2;
-        tmp->value=*it;
-        if(!ROOT){
-            tmp->parent=NULL;
-            ROOT=tmp;
-        }else {
-            tmp->parent = ROOT;
-        }
-        if(ROOT->value<*it){
-            ROOT->right=tmp;
-            recurcive_constructor(tmp, ++it, end);
-        }else {
-            ROOT->left = tmp;
-            recurcive_constructor(tmp, begin, --it);
-        }
 
+template<typename Type>
+void func(Node<Type>* node, int beg, int end, const std::vector<Type>& v){
+    if(beg>end){
+        return;
     }
+    int id=(beg+end)/2;
+    Node<Type>* tmp=new Node<Type>(v[id], NULL, NULL, node, BLACK, node->deep+1);
+    if(tmp->value>node->value){
+        node->right=tmp;
+    }else{
+        node->left=tmp;
+    }
+    func(tmp, id+1, end, v);
+    func(tmp, beg, id-1, v);
 }
+
+int bin_approx_(const int& N){
+    int c=1;
+    while(true){
+        if(c>=N){
+            break;
+        }
+        c*=2;
+    }
+    return c;
+}
+
 template<typename Type>
 class RED_BLACK_TREE{
 
@@ -355,31 +359,25 @@ public:
     RED_BLACK_TREE(){
         root=NULL;
     }
-    RED_BLACK_TREE(const std::vector<Type>& v){
-        root=NULL;
-        recurcive_constructor(root, v.begin(), v.end()--);
-       int approx_elements=1;
-       while(true){
-            if(approx_elements-1>=v.size()){
-                break;
+    RED_BLACK_TREE(const std::vector<Type>& v) {
+        root = new Node<Type>(v[v.size() / 2], NULL, NULL, NULL, BLACK, 0);
+        func(root, v.size() / 2 + 1, v.size() - 1, v);
+        func(root, 0, v.size() / 2 - 1, v);
+        std::queue<Node<Type> *> q;
+        q.push(root);
+        int N = bin_approx_(v.size() + 1);
+        int true_N = bin_approx_(v.size());
+        for (int i = 0; i < v.size(); i++) {
+            if (q.front()->left) {
+                q.push(q.front()->left);
             }
-            approx_elements*=2;
-       }
-       if(approx_elements-1!=v.size()){
-            std::queue<Node<Type>> q;
-            q.push(root);
-            for(int i=0; i<v.size(); i++){
-                if(i>approx_elements/2-1){
-                    if(q.front()) {
-                        q.front()->color = RED;
-                    }
-                    q.pop();
-                }else {
-                    q.push(q.front()->left);
-                    q.push(q.front()->right);
-                    q.pop();
-                }
+            if (q.front()->right) {
+                q.push(q.front()->right);
             }
+            if (i >= N / 2 - 1 and v.size() != true_N - 1) {
+                q.front()->color = RED;
+            }
+            q.pop();
         }
     }
     ~RED_BLACK_TREE(){
@@ -393,7 +391,7 @@ public:
             erase_(find_(root, value));
         }
     }
-    void insert(const Type& value) {
+    void insert(const Type& value){
         if(!root){
             root=new Node<Type>;
             root->value=value;
@@ -411,5 +409,47 @@ public:
             insert_(root, tmp);
         }
     }
-
+    Node<Type>* get_root(){
+        return root;
+    }
 };
+void test_3(const int& m){
+    std::vector<int> v;
+    for(int i=0; i<m; i++){
+        v.push_back(i);
+    }
+    RED_BLACK_TREE<int> rbt = RED_BLACK_TREE(v);
+    std::queue<Node<int>*> q;
+    q.push(rbt.get_root());
+    int N=bin_approx_(v.size()+1);
+    int true_N=bin_approx_(v.size());
+    int counter=0;
+    int tmp_deep=0;
+    int red_counter=0;
+    for(int i=0; i<v.size(); i++){
+        if(q.front()->deep>tmp_deep){
+            tmp_deep=q.front()->deep;
+            std::cout<<counter<<'\n';
+            counter=0;
+        }
+        if(q.front()->left) {
+            q.push(q.front()->left);
+        }
+        if(q.front()->right){
+            q.push(q.front()->right);
+        }
+        if(i >= N/2-1 and v.size()!=true_N-1){
+            if(q.front()->color==RED) {
+                red_counter++;
+            }
+        }
+        q.pop();
+        counter++;
+    }
+    std::cout<<counter<<' '<<'\n';
+    std::cout<<"nodes were repainted: "<<red_counter;
+}
+int main(){
+    test_3(3215356);
+    return 0;
+}
